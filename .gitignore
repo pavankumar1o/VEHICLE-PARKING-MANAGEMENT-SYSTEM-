@@ -1,32 +1,82 @@
-# Prerequisites
-*.d
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+class Vehicle {
+public:
+    string registrationNumber;
+    string ownerName;
+    string category;
+    string status; // PARKED or EXITED
+    double parkingCharge;
 
-# Precompiled Headers
-*.gch
-*.pch
+    Vehicle(string regNo, string owner, string cat, double charge)
+        : registrationNumber(regNo), ownerName(owner), category(cat), parkingCharge(charge), status("PARKED") {}
+};
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+class ParkingSystem {
+private:
+    vector<Vehicle> vehicles;
 
-# Fortran module files
-*.mod
-*.smod
+public:
+    void addVehicle(string regNo, string owner, string category, double charge) {
+        vehicles.push_back(Vehicle(regNo, owner, category, charge));
+        cout << "Vehicle added successfully!" << endl;
+    }
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+    void displayVehicles() {
+        cout << "\nVehicle List:" << endl;
+        for (const auto& v : vehicles) {
+            cout << "Reg No: " << v.registrationNumber << ", Owner: " << v.ownerName
+                 << ", Category: " << v.category << ", Status: " << v.status
+                 << ", Charge: " << v.parkingCharge << "\n";
+        }
+    }
 
-# Executables
-*.exe
-*.out
-*.app
+    void exitVehicle(string regNo) {
+        for (auto& v : vehicles) {
+            if (v.registrationNumber == regNo) {
+                v.status = "EXITED";
+                cout << "Vehicle " << regNo << " has exited." << endl;
+                return;
+            }
+        }
+        cout << "Vehicle not found!" << endl;
+    }
+};
+
+int main() {
+    ParkingSystem ps;
+    int choice;
+    string regNo, owner, category;
+    double charge;
+
+    while (true) {
+        cout << "\nVehicle Parking Management System";
+        cout << "\n1. Add Vehicle\n2. View Vehicles\n3. Exit Vehicle\n4. Exit Program\nEnter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter Reg No: "; cin >> regNo;
+            cout << "Enter Owner Name: "; cin >> owner;
+            cout << "Enter Category: "; cin >> category;
+            cout << "Enter Parking Charge: "; cin >> charge;
+            ps.addVehicle(regNo, owner, category, charge);
+            break;
+        case 2:
+            ps.displayVehicles();
+            break;
+        case 3:
+            cout << "Enter Reg No to exit: "; cin >> regNo;
+            ps.exitVehicle(regNo);
+            break;
+        case 4:
+            cout << "Exiting..." << endl;
+            return 0;
+        default:
+            cout << "Invalid choice!" << endl;
+        }
+    }
+}
